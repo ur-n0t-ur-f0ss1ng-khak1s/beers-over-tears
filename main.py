@@ -1,6 +1,12 @@
 import pygame
 import sys
 
+is_fullscreen = False
+
+# Define colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+
 # Initialize Pygame
 pygame.init()
 
@@ -8,15 +14,16 @@ pygame.init()
 screen = pygame.display.set_mode((800, 600), pygame.RESIZABLE)
 pygame.display.set_caption('beers over tears')
 
-# Define colors
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-
 # Create a font object
 font = pygame.font.Font(None, 36)  # None uses the default font, 36 is the font size
 
 # Render the text
 text_surface = font.render('Hello, Pygame!', True, BLACK)  # True for anti-aliasing
+
+# Load the image
+image_path = './art/ross.png'
+image = pygame.image.load(image_path)
+scaled_image = pygame.transform.scale(image, (image.get_width() * 4, image.get_height() * 4))
 
 def adjust_to_aspect_ratio(width, height):
     # Maintain a 4:3 aspect ratio
@@ -27,19 +34,33 @@ def adjust_to_aspect_ratio(width, height):
         height = int(width / aspect_ratio)
     return width, height
 
-# Get the rectangle for positioning
-text_rect = text_surface.get_rect()
-text_rect.center = (400, 300)  # Position the text at the center of the window
+def scale(w,h):
+    global text_rect, image_rect
 
-# Load the image
-image_path = './art/ross.png'
-image = pygame.image.load(image_path)
+    width, height = adjust_to_aspect_ratio(w, h)
+    print(f"{width},{height}")
 
-scaled_image = pygame.transform.scale(image, (image.get_width() * 4, image.get_height() * 4))
+    text_rect = text_surface.get_rect(center=(w // 2, ((h - height) / 2) + 10))
 
-# Get the rectangle for positioning
-image_rect = scaled_image.get_rect()
-image_rect.topleft = (20, 284)  # Position the image at coordinates (100, 100)
+    scaled_image = pygame.transform.scale(image, (image.get_width() * width/200, image.get_height() * height/150))
+
+    # Get the rectangle for positioning
+    image_rect = scaled_image.get_rect()
+    image_rect.topleft = (((w - width) / 2) + 20, height-(79*(height/150)))  # Position the image at coordinates (100, 100)
+    print(w)
+    print(h)
+
+scale(800,600)
+## Get the rectangle for positioning
+#text_rect = text_surface.get_rect()
+#text_rect.center = (400, 10)  # Position the text at the center of the window
+#
+
+#scaled_image = pygame.transform.scale(image, (image.get_width() * 4, image.get_height() * 4))
+#
+## Get the rectangle for positioning
+#image_rect = scaled_image.get_rect()
+#image_rect.topleft = (20, 284)
 
 # Main game loop
 while True:
@@ -47,32 +68,28 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_F11:
+                is_fullscreen = not is_fullscreen
+                if is_fullscreen:
+                    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+                else:
+                    screen = pygame.display.set_mode((800, 600), pygame.RESIZABLE)
+                scale(pygame.display.get_window_size()[0],pygame.display.get_window_size()[1])
         elif event.type == pygame.VIDEORESIZE:
-            # Update the screen size
             screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
-            # Optionally, re-render the text to fit the new size or adjust its position
-            text_rect = text_surface.get_rect(center=(event.w // 2, event.h // 2))
+            scale(event.w, event.h)
 
+    
     # Fill the screen with blue 
     screen.fill((0, 0, 255))
-
-    width = pygame.display.get_window_size()[0]
-    height = pygame.display.get_window_size()[1]
-    width, height = adjust_to_aspect_ratio(width, height)
-
-    scaled_image = pygame.transform.scale(image, (image.get_width() * width/200, image.get_height() * height/150))
-
-    # Get the rectangle for positioning
-    image_rect = scaled_image.get_rect()
-    image_rect.topleft = (20, height-(79*(height/150)))  # Position the image at coordinates (100, 100)
 
     # Render the image
     screen.blit(scaled_image, image_rect)
 
-        # Render the text surface
+    # Render the text surface
     screen.blit(text_surface, text_rect)
 
-    print(pygame.display.get_window_size())
     # Update the display
     pygame.display.flip()
 
