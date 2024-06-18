@@ -20,10 +20,14 @@ font = pygame.font.Font(None, 36)  # None uses the default font, 36 is the font 
 # Render the text
 text_surface = font.render('Hello, Pygame!', True, BLACK)  # True for anti-aliasing
 
-# Load the image
-image_path = './art/ross.png'
-image = pygame.image.load(image_path)
-scaled_image = pygame.transform.scale(image, (image.get_width() * 4, image.get_height() * 4))
+# Load left human art
+#image_path = './art/ross.png'
+left_image = pygame.image.load('./art/ross.png')
+scaled__left_image = pygame.transform.scale(left_image, (left_image.get_width() * 4, left_image.get_height() * 4))
+
+# Load background
+#image_path = './art/candle-lit-beers.jpeg'
+back_image = pygame.image.load('./art/candle-lit-beers.jpeg')
 
 def adjust_to_aspect_ratio(width, height):
     # Maintain a 4:3 aspect ratio
@@ -35,32 +39,24 @@ def adjust_to_aspect_ratio(width, height):
     return width, height
 
 def scale(w,h):
-    global text_rect, image_rect
+    global text_rect, left_per_rect, back_rect, scaled_left_image, left_image, back_image
 
     width, height = adjust_to_aspect_ratio(w, h)
     print(f"{width},{height}")
 
     text_rect = text_surface.get_rect(center=(w // 2, ((h - height) / 2) + 10))
 
-    scaled_image = pygame.transform.scale(image, (image.get_width() * width/200, image.get_height() * height/150))
-
+    scaled_left_image = pygame.transform.scale(left_image, (left_image.get_width() * width/200, left_image.get_height() * height/150))
     # Get the rectangle for positioning
-    image_rect = scaled_image.get_rect()
-    image_rect.topleft = (((w - width) / 2) + 20, height-(79*(height/150)))  # Position the image at coordinates (100, 100)
-    print(w)
-    print(h)
+    left_per_rect = scaled_left_image.get_rect()
+    left_per_rect.topleft = (((w - width) / 2) + 20, ((h - height) / 2)+(height-(79*(height/150))))
+
+    back_image = pygame.transform.scale(back_image, (back_image.get_width() * width/back_image.get_width(), back_image.get_height() * height/back_image.get_height()))
+    # Get the rectangle for positioning
+    back_rect = back_image.get_rect()
+    back_rect.topleft = ((w - width) / 2,(h - height) / 2)
 
 scale(800,600)
-## Get the rectangle for positioning
-#text_rect = text_surface.get_rect()
-#text_rect.center = (400, 10)  # Position the text at the center of the window
-#
-
-#scaled_image = pygame.transform.scale(image, (image.get_width() * 4, image.get_height() * 4))
-#
-## Get the rectangle for positioning
-#image_rect = scaled_image.get_rect()
-#image_rect.topleft = (20, 284)
 
 # Main game loop
 while True:
@@ -84,8 +80,11 @@ while True:
     # Fill the screen with blue 
     screen.fill((0, 0, 255))
 
+    # Render the background 
+    screen.blit(back_image, back_rect)
+
     # Render the image
-    screen.blit(scaled_image, image_rect)
+    screen.blit(scaled_left_image, left_per_rect)
 
     # Render the text surface
     screen.blit(text_surface, text_rect)
