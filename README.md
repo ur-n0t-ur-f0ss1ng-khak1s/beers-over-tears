@@ -7,3 +7,5 @@ when main wakes up the crazy neighbor is gone.
 main drinks water to cure his hangover but smokes so much weed that the molly is overpowered.
 evil strangers come to main asking for a lighter while main is cheifing the blunt. Main relizes the strangers poisoned the water supply and robs them of their molly at gun point.
 main comes back to his apartment with the molly supply and lives happily ever after and enriched by selling molly to a city of addicts.
+
+"they say weed is a gateway drug and I never knew why until that day weed became a gateway to the rest of my life"
