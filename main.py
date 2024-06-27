@@ -24,8 +24,17 @@ Look man, it's the third sunny day we've had this year so of course all these za
 All we gotta do is wait at the mud flats and someone with a solution 
 (or a demand for some top shelf product) is bound to come by eventually.
 """, True, WHITE)  # True for anti-aliasing
-text = """Look man, it's the third sunny day we've had this year so of course all these za zombies are bound to be outdoors. All we gotta do is wait at the mud flats and someone with a solution (or a demand for some top shelf product) is bound to come by eventually."""
-
+current_text_index = 0
+intro_texts = [
+        "they say weed is a gateway drug and I never knew why until that day weed became a gateway to the rest of my life.",
+        "10am I wake up and... to be honest... I think I'm still a bit stoned from eating edibles like popcorn last night. Suffice it to say: I got the damn munchies.",
+        "Also, suffice it to say I would never let myself get caught without eggs, bacon, sourdough, and some italian roast coffee in my kitchen. Just a few hours from now and I'll have this whole munchies problem solved.",
+        "Now that I really have been thinking hard about my breakfast strategy I kinda deserve a treat. Like a nice cold indica dab off of my bubbler E rig.",
+        "God please don't let me get so high that I forget about eating again.",
+        "****BOOOM CRASH!!****",
+        "Damn there's always some B.S. going on in midtown. It would be an insult to destiny not to check this out though.",
+        "Yo! Jeri what's going on out here?"
+]
 # Load left human art
 left_image = pygame.image.load('./art/ross.png')
 scaled__left_image = pygame.transform.scale(left_image, (left_image.get_width() * 4, left_image.get_height() * 4))
@@ -38,6 +47,9 @@ scaled__right_image = pygame.transform.scale(right_image, (right_image.get_width
 #image_path = './art/candle-lit-beers.jpeg'
 back_image = pygame.image.load('./art/warning-dangerous-waters-and-mud-flats.jpeg')
 
+# load textbox
+text_box_image = pygame.image.load('./art/text-box.png')
+
 def adjust_to_aspect_ratio(width, height):
     # Maintain a 4:3 aspect ratio
     aspect_ratio = 4 / 3
@@ -48,12 +60,14 @@ def adjust_to_aspect_ratio(width, height):
     return width, height
 
 def scale(w,h):
-    global text_rect, left_per_rect, back_rect, scaled_left_image, left_image, back_image, outer_rect, right_per_rect, scaled_right_image, right_image
+    global text_rect, left_per_rect, back_rect, scaled_left_image, left_image, back_image, outer_rect, right_per_rect, scaled_right_image, right_image, scaled_text_box_image, text_box_image
 
     width, height = adjust_to_aspect_ratio(w, h)
     print(f"{width},{height}")
 
+    # scaling the text box
     outer_rect = pygame.Rect(((w - width) / 2) + 20, ((h - height) / 2) + 10, width - 40, (height / 2) - 20)
+    scaled_text_box_image = pygame.transform.scale(text_box_image, (outer_rect.w, outer_rect.h))
 
     # scaling the left character
     scaled_left_image = pygame.transform.scale(left_image, (left_image.get_width() * width/200, left_image.get_height() * height/150))
@@ -113,6 +127,8 @@ while True:
                 else:
                     screen = pygame.display.set_mode((800, 600), pygame.RESIZABLE)
                 scale(pygame.display.get_window_size()[0],pygame.display.get_window_size()[1])
+            elif event.key == pygame.K_SPACE:
+                current_text_index = (current_text_index + 1) % len(intro_texts) 
         elif event.type == pygame.VIDEORESIZE:
             screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
             scale(event.w, event.h)
@@ -124,7 +140,10 @@ while True:
     # Render the background 
     screen.blit(back_image, back_rect)
 
-    pygame.draw.rect(screen, PALE_BLUE, outer_rect)  # x, y, width, height
+    # render the background image
+    screen.blit(scaled_text_box_image, outer_rect)
+    #draw the text box background
+    #pygame.draw.rect(screen, PALE_BLUE, outer_rect)
 
     # Render the image
     screen.blit(scaled_left_image, left_per_rect)
@@ -144,7 +163,7 @@ while True:
     # Render the text surface
     #screen.blit(text_surface, text_rect)
     # Render and blit the wrapped text
-    render_text(text, font, BLACK, inner_rect)
+    render_text(intro_texts[current_text_index], font, BLACK, inner_rect)
 
     # Update the display
     pygame.display.flip()
