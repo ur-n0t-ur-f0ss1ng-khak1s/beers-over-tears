@@ -26,14 +26,17 @@ All we gotta do is wait at the mud flats and someone with a solution
 """, True, WHITE)  # True for anti-aliasing
 current_text_index = 0
 intro_texts = [
-        "they say weed is a gateway drug and I never knew why until that day weed became a gateway to the rest of my life.",
-        "10am I wake up and... to be honest... I think I'm still a bit stoned from eating edibles like popcorn last night. Suffice it to say: I got the damn munchies.",
-        "Also, suffice it to say I would never let myself get caught without eggs, bacon, sourdough, and some italian roast coffee in my kitchen. Just a few hours from now and I'll have this whole munchies problem solved.",
-        "Now that I really have been thinking hard about my breakfast strategy I kinda deserve a treat. Like a nice cold indica dab off of my bubbler E rig.",
-        "God please don't let me get so high that I forget about eating again.",
-        "****BOOOM CRASH!!****",
-        "Damn there's always some B.S. going on in midtown. It would be an insult to destiny not to check this out though.",
-        "Yo! Jeri what's going on out here?"
+        {"text":"they say weed is a gateway drug and I never knew why until that day weed became a gateway to the rest of my life.", "speaker":1},
+        {"text":"10am I wake up and... to be honest... I think I'm still a bit stoned from eating edibles like popcorn last night. Suffice it to say: I got the damn munchies.", "speaker":1},
+        {"text":"Also, suffice it to say I would never let myself get caught without eggs, bacon, sourdough, and some italian roast coffee in my kitchen. Just a few hours from now and I'll have this whole munchies problem solved.", "speaker":1},
+        {"text":"Now that I really have been thinking hard about my breakfast strategy I kinda deserve a treat. Like a nice cold indica dab off of my bubbler E rig.", "speaker":1},
+        {"text":"God please don't let me get so high that I forget about eating again.", "speaker":1},
+        {"text":"****BOOOM CRASH!!****", "speaker":1},
+        {"text":"Damn looks like that liquor truck just hit a parked car", "speaker":1},
+        {"text":"Yo! Jeri did you see that car crash? Come on let's go check it out!", "speaker":1},
+        {"text":"This is ain't a bad wreck. Easy fix too. We better get some beers outta this", "speaker":2},
+        {"text":"Good morning sir! The two of us saw the whole thing happen and we happen to be the best mechanics in Anchorage", "speaker":1},
+        {"text":"Phew, I sure could use some help. I've just felt slow and stupid and hungry all day... hahaha. Anyway, look gentlemen, I'm not in a rush hahahaha so either we can fix this truck together now or I'm happy to sell ya'll some beer under the table and I'll take the rest of the day off.", "speaker":2},
 ]
 # Load left human art
 left_image = pygame.image.load('./art/ross.png')
@@ -163,7 +166,7 @@ while True:
     # Render the text surface
     #screen.blit(text_surface, text_rect)
     # Render and blit the wrapped text
-    render_text(intro_texts[current_text_index], font, BLACK, inner_rect)
+    render_text(intro_texts[current_text_index]["text"], font, BLACK, inner_rect)
 
     # Update the display
     pygame.display.flip()
