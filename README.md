@@ -9,3 +9,8 @@ evil strangers come to main asking for a lighter while main is cheifing the blun
 main comes back to his apartment with the molly supply and lives happily ever after and enriched by selling molly to a city of addicts.
 
 "they say weed is a gateway drug and I never knew why until that day weed became a gateway to the rest of my life"
+
+todo:
+starting menu with "start game" and "load game"
+ability to track the players progress and to save that progress then load the game from that place in the "load game" menu
+finish drawing the map
