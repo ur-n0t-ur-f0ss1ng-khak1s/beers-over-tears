@@ -18,9 +18,9 @@ spenard/koot's
 liquor store 
 
 endings:
-"charitable community" ending (if the player choses to help others everytime this ending occurs)
-"rational self interest" ending (if the player choses the selfish option or avoids helping others)
-"no moral compass" ending (if the player doesn't follow consistent moral principles)
+"charitable" ending (if the player choses to help others everytime this ending occurs)
+"selfish" ending (if the player choses the selfish option or avoids helping others)
+"no morals" ending (if the player doesn't follow consistent moral principles)
 "druggie" ending (if the player choses to do drugs everytime) this ends the game immediatly after the last option to do drugs is chosen
 
 "they say weed is a gateway drug and I never knew why until that day weed became a gateway to the rest of my life"

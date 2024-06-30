@@ -1,12 +1,22 @@
 import pygame
 import sys
+from intro import intro_texts
 
 is_fullscreen = False
 
 # Define colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+RED = (255, 0, 0)
 PALE_BLUE = (173, 216, 230)  # RGB values for pale blue
+
+# victory point counters
+charitable_vp = 0
+selfish_vp = 0
+no_morals_vp = 0
+druggie_vp = 0
+
+curr_text = []
 
 # Initialize Pygame
 pygame.init()
@@ -18,26 +28,23 @@ pygame.display.set_caption('beers over tears')
 # Create a font object
 font = pygame.font.Font(None, 36)  # None uses the default font, 36 is the font size
 
-# Render the text
-text_surface = font.render("""
-Look man, it's the third sunny day we've had this year so of course all these za zombies are bound to be outdoors.
-All we gotta do is wait at the mud flats and someone with a solution 
-(or a demand for some top shelf product) is bound to come by eventually.
-""", True, WHITE)  # True for anti-aliasing
 current_text_index = 0
-intro_texts = [
-        {"text":"they say weed is a gateway drug and I never knew why until that day weed became a gateway to the rest of my life.", "speaker":1},
-        {"text":"10am I wake up and... to be honest... I think I'm still a bit stoned from eating edibles like popcorn last night. Suffice it to say: I got the damn munchies.", "speaker":1},
-        {"text":"Also, suffice it to say I would never let myself get caught without eggs, bacon, sourdough, and some italian roast coffee in my kitchen. Just a few hours from now and I'll have this whole munchies problem solved.", "speaker":1},
-        {"text":"Now that I really have been thinking hard about my breakfast strategy I kinda deserve a treat. Like a nice cold indica dab off of my bubbler E rig.", "speaker":1},
-        {"text":"God please don't let me get so high that I forget about eating again.", "speaker":1},
-        {"text":"****BOOOM CRASH!!****", "speaker":1},
-        {"text":"Damn looks like that liquor truck just hit a parked car", "speaker":1},
-        {"text":"Yo! Jeri did you see that car crash? Come on let's go check it out!", "speaker":1},
-        {"text":"This is ain't a bad wreck. Easy fix too. We better get some beers outta this", "speaker":2},
-        {"text":"Good morning sir! The two of us saw the whole thing happen and we happen to be the best mechanics in Anchorage", "speaker":1},
-        {"text":"Phew, I sure could use some help. I've just felt slow and stupid and hungry all day... hahaha. Anyway, look gentlemen, I'm not in a rush hahahaha so either we can fix this truck together now or I'm happy to sell ya'll some beer under the table and I'll take the rest of the day off.", "speaker":2},
-]
+#intro_texts = [
+#        {"text":"they say weed is a gateway drug and I never knew why until that day weed became a gateway to the rest of my life.", "speaker":0},
+#        {"text":"10am I wake up and... to be honest... I think I'm still a bit stoned from eating edibles like popcorn last night. Suffice it to say: I got the damn munchies.", "speaker":0},
+#        {"text":"Also, suffice it to say I would never let myself get caught without eggs, bacon, sourdough, and some italian roast coffee in my kitchen. Just a few hours from now and I'll have this whole munchies problem solved.", "speaker":0},
+#        {"text":"Now that I really have been thinking hard about my breakfast strategy I kinda deserve a treat. Like a nice cold indica dab off of my bubbler E rig.", "speaker":0},
+#        {"text":"God please don't let me get so high that I forget about eating again.", "speaker":0},
+#        {"text":"****BOOOM CRASH!!****", "speaker":0},
+#        {"text":"Damn looks like that liquor truck just hit a parked car", "speaker":0},
+#        {"text":"Yo! Jeri did you see that car crash? Come on let's go check it out!", "speaker":0},
+#        {"text":"This is ain't a bad wreck. Easy fix too. We better get some beers outta this", "speaker":1},
+#        {"text":"Good morning sir! The two of us saw the whole thing happen and we happen to be the best mechanics in Anchorage", "speaker":0},
+#        {"text":"Phew, I sure could use some help. I've just felt slow and stupid and hungry all day... hahaha. Anyway, look gentlemen, I'm not in a rush hahahaha so either we can fix this truck together now or I'm happy to sell ya'll some beer under the table and I'll take the rest of the day off.", "speaker":1},
+#        {"text":"""(1) I'd be god damned if I left a fellow American to suffer due to the forces of entropy... not to mention how bad this could affect the economy... we're gonna help!! \n \n (2) All this talking has me thirsting. We'll take the beer, sir.""", "speaker":2, "input":{1:{"victory":"charitable", "VP":10}, 2:{"victory":"selfish", "VP":10}}},
+#]
+
+curr_text = intro_texts
 # Load left human art
 left_image = pygame.image.load('./art/ross.png')
 scaled__left_image = pygame.transform.scale(left_image, (left_image.get_width() * 4, left_image.get_height() * 4))
@@ -48,7 +55,7 @@ scaled__right_image = pygame.transform.scale(right_image, (right_image.get_width
 
 # Load background
 #image_path = './art/candle-lit-beers.jpeg'
-back_image = pygame.image.load('./art/warning-dangerous-waters-and-mud-flats.jpeg')
+back_image = pygame.image.load('./art/ross-wakes-up.jpeg')
 
 # load textbox
 text_box_image = pygame.image.load('./art/text-box.png')
@@ -104,6 +111,10 @@ def render_text(text, font, color, rect, aa=True):
             current_line.pop()
             lines.append(' '.join(current_line))
             current_line = [word]
+        elif word == "\n":
+            current_line.pop()
+            lines.append(' '.join(current_line))
+            current_line = []
 
     if current_line:
         lines.append(' '.join(current_line))
@@ -113,6 +124,17 @@ def render_text(text, font, color, rect, aa=True):
         line_surface = font.render(line, aa, color)
         screen.blit(line_surface, (rect.left, y))
         y += height
+
+def handle_input(input_dict):
+    if (input_dict["victory"] == "charitable"):
+        charitable_vp += input_dict["VP"]
+    elif (input_dict["victory"] == "selfish"):
+        selfish_vp += input_dict["VP"]
+    elif (input_dict["victory"] == "no_morals"):
+        no_morals_vp += input_dict["VP"]
+    elif (input_dict["victory"] == "druggie"):
+        druggie_vp += input_dict["VP"]
+
 
 scale(800,600)
 
@@ -130,8 +152,19 @@ while True:
                 else:
                     screen = pygame.display.set_mode((800, 600), pygame.RESIZABLE)
                 scale(pygame.display.get_window_size()[0],pygame.display.get_window_size()[1])
-            elif event.key == pygame.K_SPACE:
-                current_text_index = (current_text_index + 1) % len(intro_texts) 
+            elif (event.key == pygame.K_SPACE and "input" not in curr_text[current_text_index]):
+                current_text_index = (current_text_index + 1) % len(curr_text) 
+            elif (event.key == pygame.K_1 and 1 in curr_text[current_text_index]["input"]):
+                handle_input(curr_text[current_text_index]["input"][1])
+                current_text_index = (current_text_index + 1) % len(curr_text) 
+                print("1 pressed")
+            elif (event.key == pygame.K_2 and 2 in curr_text[current_text_index]["input"]):
+                current_text_index = (current_text_index + 1) % len(curr_text) 
+                print("2 pressed")
+            elif (event.key == pygame.K_3 and 3 in curr_text[current_text_index]["input"]):
+                current_text_index = (current_text_index + 1) % len(curr_text) 
+                print("3 pressed")
+
         elif event.type == pygame.VIDEORESIZE:
             screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
             scale(event.w, event.h)
@@ -156,17 +189,23 @@ while True:
 
      # Calculate the inner text rectangle dimensions and position
     inner_rect = pygame.Rect(
-        outer_rect.left + 10,
-        outer_rect.top + 10,
-        outer_rect.width - 2 * 10,
-        outer_rect.height - 2 * 10
+        outer_rect.left + 25,
+        outer_rect.top + 25,
+        outer_rect.width - 2 * 25,
+        outer_rect.height - 2 * 25
     )
     #text_rect = text_surface.get_rect(center=inner_rect.center)
 
     # Render the text surface
     #screen.blit(text_surface, text_rect)
     # Render and blit the wrapped text
-    render_text(intro_texts[current_text_index]["text"], font, BLACK, inner_rect)
+    if (curr_text[current_text_index]["speaker"] == 0):
+        TEXT_COLOR = BLACK 
+    elif (curr_text[current_text_index]["speaker"] == 1):
+        TEXT_COLOR = WHITE
+    elif (curr_text[current_text_index]["speaker"] == 2):
+        TEXT_COLOR = RED 
+    render_text(curr_text[current_text_index]["text"], font, TEXT_COLOR, inner_rect)
 
     # Update the display
     pygame.display.flip()
