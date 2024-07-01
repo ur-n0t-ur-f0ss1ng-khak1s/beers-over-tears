@@ -1,6 +1,8 @@
 import pygame
 import sys
 from intro import intro_texts
+from intro_druggie1 import intro_druggie1
+#from intro_charitable1 import intro_charitable1
 
 is_fullscreen = False
 
@@ -8,6 +10,7 @@ is_fullscreen = False
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
+GREEN = (0, 255, 0)
 PALE_BLUE = (173, 216, 230)  # RGB values for pale blue
 
 # victory point counters
@@ -29,20 +32,6 @@ pygame.display.set_caption('beers over tears')
 font = pygame.font.Font(None, 36)  # None uses the default font, 36 is the font size
 
 current_text_index = 0
-#intro_texts = [
-#        {"text":"they say weed is a gateway drug and I never knew why until that day weed became a gateway to the rest of my life.", "speaker":0},
-#        {"text":"10am I wake up and... to be honest... I think I'm still a bit stoned from eating edibles like popcorn last night. Suffice it to say: I got the damn munchies.", "speaker":0},
-#        {"text":"Also, suffice it to say I would never let myself get caught without eggs, bacon, sourdough, and some italian roast coffee in my kitchen. Just a few hours from now and I'll have this whole munchies problem solved.", "speaker":0},
-#        {"text":"Now that I really have been thinking hard about my breakfast strategy I kinda deserve a treat. Like a nice cold indica dab off of my bubbler E rig.", "speaker":0},
-#        {"text":"God please don't let me get so high that I forget about eating again.", "speaker":0},
-#        {"text":"****BOOOM CRASH!!****", "speaker":0},
-#        {"text":"Damn looks like that liquor truck just hit a parked car", "speaker":0},
-#        {"text":"Yo! Jeri did you see that car crash? Come on let's go check it out!", "speaker":0},
-#        {"text":"This is ain't a bad wreck. Easy fix too. We better get some beers outta this", "speaker":1},
-#        {"text":"Good morning sir! The two of us saw the whole thing happen and we happen to be the best mechanics in Anchorage", "speaker":0},
-#        {"text":"Phew, I sure could use some help. I've just felt slow and stupid and hungry all day... hahaha. Anyway, look gentlemen, I'm not in a rush hahahaha so either we can fix this truck together now or I'm happy to sell ya'll some beer under the table and I'll take the rest of the day off.", "speaker":1},
-#        {"text":"""(1) I'd be god damned if I left a fellow American to suffer due to the forces of entropy... not to mention how bad this could affect the economy... we're gonna help!! \n \n (2) All this talking has me thirsting. We'll take the beer, sir.""", "speaker":2, "input":{1:{"victory":"charitable", "VP":10}, 2:{"victory":"selfish", "VP":10}}},
-#]
 
 curr_text = intro_texts
 # Load left human art
@@ -126,6 +115,7 @@ def render_text(text, font, color, rect, aa=True):
         y += height
 
 def handle_input(input_dict):
+    global charitable_vp, selfish_vp, no_morals_vp, druggie_vp, curr_text
     if (input_dict["victory"] == "charitable"):
         charitable_vp += input_dict["VP"]
     elif (input_dict["victory"] == "selfish"):
@@ -134,6 +124,7 @@ def handle_input(input_dict):
         no_morals_vp += input_dict["VP"]
     elif (input_dict["victory"] == "druggie"):
         druggie_vp += input_dict["VP"]
+    curr_text = input_dict["next"]
 
 
 scale(800,600)
@@ -159,6 +150,7 @@ while True:
                 current_text_index = (current_text_index + 1) % len(curr_text) 
                 print("1 pressed")
             elif (event.key == pygame.K_2 and 2 in curr_text[current_text_index]["input"]):
+                handle_input(curr_text[current_text_index]["input"][2])
                 current_text_index = (current_text_index + 1) % len(curr_text) 
                 print("2 pressed")
             elif (event.key == pygame.K_3 and 3 in curr_text[current_text_index]["input"]):
@@ -199,12 +191,16 @@ while True:
     # Render the text surface
     #screen.blit(text_surface, text_rect)
     # Render and blit the wrapped text
+    print(curr_text[current_text_index])
     if (curr_text[current_text_index]["speaker"] == 0):
         TEXT_COLOR = BLACK 
     elif (curr_text[current_text_index]["speaker"] == 1):
         TEXT_COLOR = WHITE
     elif (curr_text[current_text_index]["speaker"] == 2):
         TEXT_COLOR = RED 
+    elif (curr_text[current_text_index]["speaker"] == 3):
+        TEXT_COLOR = GREEN
+
     render_text(curr_text[current_text_index]["text"], font, TEXT_COLOR, inner_rect)
 
     # Update the display
